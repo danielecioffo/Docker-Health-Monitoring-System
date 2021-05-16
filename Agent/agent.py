@@ -5,7 +5,7 @@ from datetime import datetime
 import subprocess
 from subprocess import PIPE
 
-INTERVAL_BETWEEN_PINGS = 30  # Seconds between periodic checks
+INTERVAL_BETWEEN_PINGS = 10  # Seconds between periodic checks
 THRESHOLD = 50  # Packet loss threshold
 MONITORED_LIST = [
     "dummy_one",
