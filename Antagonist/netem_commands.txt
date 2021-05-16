@@ -1,0 +1,5 @@
+To see all the active rules:
+	tc qdisc
+	
+To delete a specific rule:
+	tc qdisc del ...
