@@ -23,8 +23,7 @@ def periodic_attack():
 
 
 if __name__ == '__main__':
-    # open in write mode, to remove the old information logged
-    logging.basicConfig(filename='execution.log', level=logging.INFO, filemode='w')
+    logging.basicConfig(filename='execution.log', level=logging.INFO)
     logging.info("%s - Antagonist started\n"
                  "Interval between periodic attacks: %d\n", datetime.now(), INTERVAL_BETWEEN_ATTACKS)
 
