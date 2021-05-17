@@ -1,4 +1,0 @@
-Per collegarsi al Docker dell'Host OS dal container è necessario fare aggiungere un'opzione al comando run:
-	-v /var/run/docker.sock:/var/run/docker.sock
-Per esempio: docker run -v /var/run/docker.sock:/var/run/docker.sock antagonist
-Altrimenti tenta di collegarsi al Docker del suo ambiente locale, che non esiste
