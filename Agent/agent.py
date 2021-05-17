@@ -45,7 +45,7 @@ def periodic_check():
                 logging.warning("Container %s is experiencing %f%% packet loss. Restarting it...", monitored, loss)
                 container.restart()
             else:
-                logging.info("Container %s is working correctly", monitored)
+                logging.info("Container %s is experiencing %f%% packet loss (under the selected threshold for restart)", monitored, loss)
 
 
 if __name__ == '__main__':
