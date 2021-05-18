@@ -8,4 +8,7 @@ ADD ./requirements.txt /root/
 
 # Run at startup the following commands
 RUN pip install -r /root/requirements.txt
+# This variable forces pikato print something out
+ENV PYTHONUNBUFFERED=1
 CMD ["/usr/bin/python3", "/root/agent.py"]
+

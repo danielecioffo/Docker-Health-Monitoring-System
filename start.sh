@@ -11,4 +11,3 @@ docker run -d --name agent -v /var/run/docker.sock:/var/run/docker.sock agent
 # Start antagonist
 docker build -t antagonist Antagonist/
 docker run -d --name antagonist -v /var/run/docker.sock:/var/run/docker.sock antagonist
-

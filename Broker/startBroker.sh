@@ -1,0 +1,1 @@
+docker run -d --hostname rabbitMq-broker --name rabbitMq-broker rabbitmq:3

@@ -4,6 +4,7 @@ import time
 from datetime import datetime
 import subprocess
 from subprocess import PIPE
+import communication
 
 INTERVAL_BETWEEN_PINGS = 10  # Seconds between periodic checks
 THRESHOLD = 50  # Packet loss threshold
