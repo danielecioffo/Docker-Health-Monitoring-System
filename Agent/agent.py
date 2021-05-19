@@ -4,7 +4,8 @@ import time
 from datetime import datetime
 import subprocess
 from subprocess import PIPE
-#import communication
+
+# import communication
 
 INTERVAL_BETWEEN_PINGS = 10  # Seconds between periodic checks
 THRESHOLD = 50  # Packet loss threshold
@@ -13,6 +14,7 @@ MONITORED_LIST = [
     "dummy_two",
     "dummy_three"
 ]
+
 
 def add_to_monitored(container_name):
     MONITORED_LIST.append(container_name)
@@ -25,6 +27,7 @@ def remove_from_monitored(container_name):
 def change_threshold(new_value):
     global THRESHOLD
     THRESHOLD = new_value
+
 
 def ping(address):
     """
@@ -57,7 +60,8 @@ def periodic_check():
                 logging.warning("Container %s is experiencing %f%% packet loss. Restarting it...", monitored, loss)
                 container.restart()
             else:
-                logging.info("Container %s is experiencing %f%% packet loss (under the selected threshold for restart)", monitored, loss)
+                logging.info("Container %s is experiencing %f%% packet loss (under the selected threshold for restart)",
+                             monitored, loss)
 
 
 if __name__ == '__main__':
