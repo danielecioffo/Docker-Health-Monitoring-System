@@ -11,7 +11,7 @@ info:
   license:
     name: "Apache 2.0"
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: "172.16.3.195:8080"
+host: "172.16.3.169:8080"
 basePath: "/v2"
 tags:
 - name: "containers"
