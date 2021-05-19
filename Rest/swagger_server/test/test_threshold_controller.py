@@ -16,7 +16,7 @@ class TestThresholdController(BaseTestCase):
 
         Update packet loss threshold
         """
-        thresholdValue = 789
+        thresholdValue = 1.2
         response = self.client.open(
             '/v2/threshold',
             method='PUT',

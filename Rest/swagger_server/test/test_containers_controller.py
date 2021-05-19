@@ -15,10 +15,10 @@ class TestContainersController(BaseTestCase):
     def test_delete_monitored_container(self):
         """Test case for delete_monitored_container
 
-        Unmonitore specified container
+        Unmonitor specified container
         """
         response = self.client.open(
-            '/v2/containers/hostname/{containerName}'.format(containerName='containerName_example'),
+            '/v2/containers/{hostname}/{containerName}'.format(hostname='hostname_example', containerName='containerName_example'),
             method='DELETE')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
@@ -37,10 +37,10 @@ class TestContainersController(BaseTestCase):
     def test_post_container(self):
         """Test case for post_container
 
-        Monitore specified container
+        Monitor specified container
         """
         response = self.client.open(
-            '/v2/containers/hostname/{containerName}'.format(containerName='containerName_example'),
+            '/v2/containers/{hostname}/{containerName}'.format(hostname='hostname_example', containerName='containerName_example'),
             method='POST',
             content_type='application/x-www-form-urlencoded')
         self.assert200(response,

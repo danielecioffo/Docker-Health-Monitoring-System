@@ -5,11 +5,13 @@ from swagger_server.models.container import Container  # noqa: E501
 from swagger_server import util
 
 
-def delete_monitored_container(containerName):  # noqa: E501
-    """Unmonitore specified container
+def delete_monitored_container(hostname, containerName):  # noqa: E501
+    """Unmonitor specified container
 
     Unmonitored container specified in the path # noqa: E501
 
+    :param hostname: Name of the host
+    :type hostname: str
     :param containerName: Name of a container inside a host
     :type containerName: str
 
@@ -29,11 +31,13 @@ def get_containers():  # noqa: E501
     return 'do some magic!'
 
 
-def post_container(containerName):  # noqa: E501
-    """Monitore specified container
+def post_container(hostname, containerName):  # noqa: E501
+    """Monitor specified container
 
-    Monitore container specified in the path # noqa: E501
+    Monitor container specified in the path # noqa: E501
 
+    :param hostname: Name of the host
+    :type hostname: str
     :param containerName: Name of a container inside a host
     :type containerName: str
 

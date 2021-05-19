@@ -41,12 +41,12 @@ paths:
             items:
               $ref: "#/definitions/Container"
       x-swagger-router-controller: "swagger_server.controllers.containers_controller"
-  /containers/hostname/{containerName}:
+  /containers/{hostname}/{containerName}:
     post:
       tags:
       - "containers"
-      summary: "Monitore specified container"
-      description: "Monitore container specified in the path"
+      summary: "Monitor specified container"
+      description: "Monitor container specified in the path"
       operationId: "post_container"
       consumes:
       - "application/x-www-form-urlencoded"
@@ -54,6 +54,11 @@ paths:
       - "application/xml"
       - "application/json"
       parameters:
+      - name: "hostname"
+        in: "path"
+        description: "Name of the host"
+        required: true
+        type: "string"
       - name: "containerName"
         in: "path"
         description: "Name of a container inside a host"
@@ -66,13 +71,18 @@ paths:
     delete:
       tags:
       - "containers"
-      summary: "Unmonitore specified container"
+      summary: "Unmonitor specified container"
       description: "Unmonitored container specified in the path"
       operationId: "delete_monitored_container"
       produces:
       - "application/xml"
       - "application/json"
       parameters:
+      - name: "hostname"
+        in: "path"
+        description: "Name of the host"
+        required: true
+        type: "string"
       - name: "containerName"
         in: "path"
         description: "Name of a container inside a host"
@@ -87,7 +97,7 @@ paths:
       tags:
       - "threshold"
       summary: "Update packet loss threshold"
-      description: "Update packet loss threshold used in netem in the hosts' containers"
+      description: "Update packet loss threshold used in the Agents"
       operationId: "put_threshold"
       consumes:
       - "application/xml"
@@ -101,8 +111,8 @@ paths:
         description: "New value threshold"
         required: true
         schema:
-          type: "integer"
-          format: "int64"
+          type: "number"
+          format: "double"
           example: "80"
       responses:
         "200":
