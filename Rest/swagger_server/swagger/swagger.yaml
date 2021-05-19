@@ -1,0 +1,135 @@
+---
+swagger: "2.0"
+info:
+  description: "This are the REST API for communicating with the Docker Health Monitoring\
+    \ System. The system monitors the wellbeing of the containers running on the hosts\
+    \ bt sending periodic probes. The REST API gives to the user the possiblity to\
+    \ retrieve some information about the containers"
+  version: "1.0.0"
+  title: "Docker Health Monitoring System"
+  termsOfService: "https://github.com/danielecioffo/Docker-Health-Monitoring-System"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "172.16.3.195:8080"
+basePath: "/v2"
+tags:
+- name: "containers"
+  description: "Operations that regards all containers"
+- name: "threshold"
+  description: "Operation about the lossy threshold used in netem"
+schemes:
+- "https"
+- "http"
+paths:
+  /containers:
+    get:
+      tags:
+      - "containers"
+      summary: "Retrieve all containers"
+      description: "Retrieve the list of all containers with their informations"
+      operationId: "get_containers"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Container"
+      x-swagger-router-controller: "swagger_server.controllers.containers_controller"
+  /containers/hostname/{containerName}:
+    post:
+      tags:
+      - "containers"
+      summary: "Monitore specified container"
+      description: "Monitore container specified in the path"
+      operationId: "post_container"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "containerName"
+        in: "path"
+        description: "Name of a container inside a host"
+        required: true
+        type: "string"
+      responses:
+        "405":
+          description: "Invalid input"
+      x-swagger-router-controller: "swagger_server.controllers.containers_controller"
+    delete:
+      tags:
+      - "containers"
+      summary: "Unmonitore specified container"
+      description: "Unmonitored container specified in the path"
+      operationId: "delete_monitored_container"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "containerName"
+        in: "path"
+        description: "Name of a container inside a host"
+        required: true
+        type: "string"
+      responses:
+        "405":
+          description: "Invalid input"
+      x-swagger-router-controller: "swagger_server.controllers.containers_controller"
+  /threshold:
+    put:
+      tags:
+      - "threshold"
+      summary: "Update packet loss threshold"
+      description: "Update packet loss threshold used in netem in the hosts' containers"
+      operationId: "put_threshold"
+      consumes:
+      - "application/xml"
+      - "application/json"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "thresholdValue"
+        description: "New value threshold"
+        required: true
+        schema:
+          type: "integer"
+          format: "int64"
+          example: "80"
+      responses:
+        "200":
+          description: "successful operation"
+        "400":
+          description: "Invalid threshold supplied"
+      x-swagger-router-controller: "swagger_server.controllers.threshold_controller"
+definitions:
+  Container:
+    type: "object"
+    required:
+    - "host"
+    - "name"
+    properties:
+      name:
+        type: "string"
+        example: "huey container"
+      host:
+        type: "string"
+        example: "duckburg"
+      monitor:
+        type: "boolean"
+      status:
+        type: "string"
+        example: "on"
+    example:
+      name: "huey container"
+      host: "duckburg"
+      monitor: true
+      status: "on"
