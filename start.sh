@@ -1,3 +1,6 @@
+#install pika, to be used for rabbitMq communication with broker
+pip3 install pika
+
 # Start three dummy containers
 docker build -t dummy Dummy\ Container/
 docker run -d --name dummy_one --cap-add=NET_ADMIN dummy
