@@ -14,6 +14,17 @@ MONITORED_LIST = [
     "dummy_three"
 ]
 
+def add_to_monitored(container_name):
+    MONITORED_LIST.append(container_name)
+
+
+def remove_from_monitored(container_name):
+    MONITORED_LIST.remove(container_name)
+
+
+def change_threshold(new_value):
+    global THRESHOLD
+    THRESHOLD = new_value
 
 def ping(address):
     """
