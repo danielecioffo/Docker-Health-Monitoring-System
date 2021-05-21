@@ -1,4 +1,5 @@
 import logging
+import threading
 import docker
 import time
 from datetime import datetime
@@ -6,6 +7,7 @@ import subprocess
 from subprocess import PIPE
 import communication
 
+lock = threading.Lock()  # Lock to be acquired in order to read/write into shared variables
 INTERVAL_BETWEEN_PINGS = 10  # Seconds between periodic checks
 THRESHOLD = 50  # Packet loss threshold
 MONITORED_LIST = [
@@ -40,11 +42,11 @@ def ping(address):
     return packet_loss
 
 
-def periodic_check():
+def periodic_check(to_be_monitored, threshold):
     """
     Function to be called periodically to monitor the state of all containers in MONITORED_LIST
     """
-    for monitored in MONITORED_LIST:
+    for monitored in to_be_monitored:
         # Try to find the container to be monitored in the list
         try:
             container = client.containers.get(monitored)
@@ -60,7 +62,7 @@ def periodic_check():
             container.restart()
         else:
             loss = ping(ip_address)
-            if loss >= THRESHOLD:
+            if loss >= threshold:
                 logging.warning("Container %s is experiencing %f%% packet loss. Restarting it...", monitored, loss)
                 container.restart()
             else:
@@ -68,16 +70,31 @@ def periodic_check():
                              monitored, loss)
 
 
+def agent_thread():
+    """
+    Function to be run by the agent thread that must check the status of the system
+    """
+    logging.info("%s - Agent started", datetime.now())
+    logging.info("Interval between periodic checks: %d", INTERVAL_BETWEEN_PINGS)
+    while 1:
+        with lock:
+            local_threshold = THRESHOLD
+            local_list = MONITORED_LIST
+        logging.info("Packet loss threshold: %d", INTERVAL_BETWEEN_PINGS, local_threshold)
+        logging.info("%s - Checking the state of containers...", datetime.now())
+        periodic_check(local_list, local_threshold)
+        time.sleep(INTERVAL_BETWEEN_PINGS)
+
+
 if __name__ == '__main__':
     logging.basicConfig(filename='execution.log', level=logging.INFO)
-    logging.info("%s - Agent started\n"
-                 "Interval between periodic checks: %d\n"
-                 "Packet loss threshold: %d", datetime.now(), INTERVAL_BETWEEN_PINGS, THRESHOLD)
 
     # Instantiate a Docker client
     client = docker.from_env()
+
+    # Start agent thread
+    agent = threading.Thread(target=agent_thread)
+    agent.start()
+
+    # Initialize the communication
     communication.initialize_communication()
-    while 1:
-        logging.info("%s - Checking the state of containers...", datetime.now())
-        periodic_check()
-        time.sleep(INTERVAL_BETWEEN_PINGS)
