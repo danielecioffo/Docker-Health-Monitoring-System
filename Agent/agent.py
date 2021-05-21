@@ -54,7 +54,7 @@ def report_container_status():
             monitored = True
         else:
             monitored = False
-        status_list.append((hostname, name, status, monitored))
+        status_list.append({'hostname': hostname, 'name': name, 'status': status, 'monitored': monitored})
     return status_list
 
 

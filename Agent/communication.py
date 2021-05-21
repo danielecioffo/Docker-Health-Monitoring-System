@@ -1,14 +1,17 @@
 # consume messages from REST interface
 import pika
 import socket
+import json
 import agent
 
 
 def change_threshold(val):
+    print("Received command: change threshold to %d", val)
     agent.change_threshold(val)
 
 
 def activate_deactivate_container(container_name, hostname, new_status):
+    print("Received command: change monitored value of container %s on %d into %s", container_name, hostname, new_status)
     if hostname != socket.gethostname():
         return
     if new_status == 'True':
@@ -23,12 +26,14 @@ def provide_list_of_containers():
     callback when the status is asked
     collects the status from each container and publishes it into the relative topic
     """
-    string = ''  # find status of containers
+    print("Received command: provide list of containers")
+    string = json.dumps(agent.report_container_status())  # find status of containers
 
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='172.16.3.172'))  # broker ip address
     channel = connection.channel()
     channel.queue_declare(queue='list_response')
     channel.basic_publish(exchange='', routing_key='list_response', body=string)
+    print("I've sent the following answer %s", string)
     connection.close()
 
 
