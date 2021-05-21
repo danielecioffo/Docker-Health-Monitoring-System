@@ -4,8 +4,7 @@ import time
 from datetime import datetime
 import subprocess
 from subprocess import PIPE
-
-# import communication
+import communication
 
 INTERVAL_BETWEEN_PINGS = 10  # Seconds between periodic checks
 THRESHOLD = 50  # Packet loss threshold
@@ -72,6 +71,7 @@ if __name__ == '__main__':
 
     # Instantiate a Docker client
     client = docker.from_env()
+    communication.initialize_communication()
     while 1:
         logging.info("%s - Checking the state of containers...", datetime.now())
         periodic_check()
