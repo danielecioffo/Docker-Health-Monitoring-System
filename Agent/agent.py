@@ -45,7 +45,12 @@ def periodic_check():
     Function to be called periodically to monitor the state of all containers in MONITORED_LIST
     """
     for monitored in MONITORED_LIST:
-        container = client.containers.get(monitored)
+        # Try to find the container to be monitored in the list
+        try:
+            container = client.containers.get(monitored)
+        except:
+            logging.warning("Container %s is not present on this Docker host.", monitored)
+            continue
         # Since local attributes are cached, we must call reload() to refresh attrs
         container.reload()
         ip_address = container.attrs['NetworkSettings']['IPAddress']
