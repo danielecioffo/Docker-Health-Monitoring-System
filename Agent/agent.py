@@ -80,7 +80,7 @@ def agent_thread():
         with lock:
             local_threshold = THRESHOLD
             local_list = MONITORED_LIST
-        logging.info("Packet loss threshold: %d", INTERVAL_BETWEEN_PINGS, local_threshold)
+        logging.info("Packet loss threshold: %d", local_threshold)
         logging.info("%s - Checking the state of containers...", datetime.now())
         periodic_check(local_list, local_threshold)
         time.sleep(INTERVAL_BETWEEN_PINGS)
