@@ -2,6 +2,7 @@ import logging
 import threading
 import docker
 import time
+import socket
 from datetime import datetime
 import subprocess
 from subprocess import PIPE
@@ -40,6 +41,21 @@ def ping(address):
     packet_loss = float(
         [x for x in stdout.decode('utf-8').split('\n') if x.find('packet loss') != -1][0].split('%')[0].split(' ')[-1])
     return packet_loss
+
+
+def report_container_status():
+    container_list = client.containers.list(all=True)
+    status_list = []
+    for container in container_list:
+        status = container.status()
+        name = container.name
+        hostname = socket.gethostname()
+        if container.name in MONITORED_LIST:
+            monitored = True
+        else:
+            monitored = False
+        status_list.append((hostname, name, status, monitored))
+    return status_list
 
 
 def periodic_check(to_be_monitored, threshold):
