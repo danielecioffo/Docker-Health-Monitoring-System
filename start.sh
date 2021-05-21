@@ -1,3 +1,7 @@
+#if not present, install docker module for python
+pip3 install docker
+pip3 install six
+
 #install pika, to be used for rabbitMq communication with broker
 pip3 install pika
 
