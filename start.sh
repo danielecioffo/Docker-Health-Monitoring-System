@@ -8,8 +8,9 @@ docker run -d --name dummy_two --cap-add=NET_ADMIN dummy
 docker run -d --name dummy_three --cap-add=NET_ADMIN dummy
 
 # Start health monitoring agent
-docker build -t agent Agent/
-docker run -d --name agent -v /var/run/docker.sock:/var/run/docker.sock agent
+#docker build -t agent Agent/
+#docker run -d --name agent -v /var/run/docker.sock:/var/run/docker.sock agent
+python3 Agent/agent.py &
 
 # Start antagonist
 docker build -t antagonist Antagonist/
