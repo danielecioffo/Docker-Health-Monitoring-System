@@ -1,1 +1,1 @@
-docker run -d --hostname rabbitMq-broker --name rabbitMq-broker rabbitmq:3 -p 5672:5672
+docker run -d --hostname rabbitMq-broker --name rabbitMq-broker -p 5672:5672 rabbitmq:3
