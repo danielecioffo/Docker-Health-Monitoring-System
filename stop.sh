@@ -21,3 +21,9 @@ docker stop dummy_three
 docker rm dummy_one
 docker rm dummy_two
 docker rm dummy_three
+
+# Stop REST
+docker stop swagger_server
+
+# Remove REST
+docker rm swagger_server
