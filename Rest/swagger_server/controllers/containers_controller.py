@@ -1,5 +1,7 @@
 import connexion
 import six
+import pika
+import json
 
 from swagger_server.models.container import Container  # noqa: E501
 from swagger_server import util
@@ -28,7 +30,20 @@ def get_containers():  # noqa: E501
 
     :rtype: List[Container]
     """
-    return 'do some magic!'
+    returnValue = []
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='172.16.3.172'))
+    channel = connection.channel()
+    channel.queue_declare(queue='list_response')
+    method_frame, header_frame, body = channel.basic_get(queue='list_response')
+    if method_frame.NAME is None:
+        pass # TODO: rifare la richiesta se questo caso è possibile
+    else:
+        channel.basic_ack(delivery_tag=method_frame.delivery_tag)
+        bodyArray = json.load(body)
+        for value in bodyArray:
+            returnValue.append(Container(name=value.get('name'), host=value.get('hostname'), monitor=value.get('monitored'), status=value.get('status')))
+
+    return returnValue
 
 
 def post_container(hostname, containerName):  # noqa: E501
