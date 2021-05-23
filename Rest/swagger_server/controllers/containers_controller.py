@@ -31,7 +31,7 @@ def get_containers():  # noqa: E501
 
     :rtype: List[Container]
     """
-    returnValue = []
+    return_value = []
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='172.16.3.172'))
     channel = connection.channel()
     channel.queue_declare(queue='list_response')
@@ -40,11 +40,11 @@ def get_containers():  # noqa: E501
         pass # TODO: rifare la richiesta se questo caso è possibile
     else:
         channel.basic_ack(delivery_tag=method_frame.delivery_tag)
-        bodyArray = json.load(body)
-        for value in bodyArray:
-            returnValue.append(Container(name=value.get('name'), host=value.get('hostname'), monitor=value.get('monitored'), status=value.get('status')))
+        body_array = json.load(body)
+        for value in body_array:
+            return_value.append(Container(name=value.get('name'), host=value.get('hostname'), monitor=value.get('monitored'), status=value.get('status')))
 
-    return returnValue
+    return return_value
 
 
 def post_container(hostname, containerName):  # noqa: E501
