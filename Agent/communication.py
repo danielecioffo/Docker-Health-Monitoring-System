@@ -48,9 +48,10 @@ def generic_callback(ch, method, properties, body):
         provide_list_of_containers()
     # if topic is actives, call activate_deactivate_container
     elif method.routing_key == 'actives':
-        body_string = body.decode().replace("(", "").replace(")", "")
-        body_tuple = tuple(map(str, body_string))
-        activate_deactivate_container(container_name=body_tuple[0], hostname=body_tuple[1], new_status=body_tuple[2])
+        #body_string = body.decode().replace("(", "").replace(")", "")
+        #body_tuple = tuple(map(str, body_string))
+        body_tuple = tuple((body.decode.replace("(", "").replace(")", "")).split(','))
+        activate_deactivate_container(container_name=body_tuple[1], hostname=body_tuple[0], new_status=body_tuple[2])
 
 
 def initialize_communication():

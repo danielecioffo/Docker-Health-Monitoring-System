@@ -19,7 +19,8 @@ def delete_monitored_container(hostname, containerName):  # noqa: E501
 
     :rtype: None
     """
-    return 'do some magic!'
+    activate_deactivate_posting(hostname, containerName, 'False')
+    return 'Successful operation!'
 
 
 def get_containers():  # noqa: E501
@@ -58,4 +59,28 @@ def post_container(hostname, containerName):  # noqa: E501
 
     :rtype: None
     """
-    return 'do some magic!'
+    activate_deactivate_posting(hostname, containerName, 'True')
+    return 'Successful operation!'
+
+
+def activate_deactivate_posting(hostname, container_name, new_status):
+    """
+
+    Publish in a specific queue the message either to remove or add to the
+    monitored a specific container hosted on a particular host
+
+    :param hostname: name of the host
+    :type hostname: str
+    :param container_name: name of a container inside a host
+    :type container_name: str
+    :param new_status: indicate if it is a delete or a post ('False' or 'True')
+    :type new_status: str
+    :return:
+    """
+    body_tuple = (hostname, container_name, new_status)
+    body_string = str(body_tuple)
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host='172.16.3.172'))
+    channel = connection.channel()
+    channel.queue_declare(queue='actives')
+    channel.basic_publish(exchange='', routing_key='actives', body=body_string)
+    connection.close()
