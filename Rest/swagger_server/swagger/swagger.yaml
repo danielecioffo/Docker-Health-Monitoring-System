@@ -17,7 +17,7 @@ tags:
 - name: "containers"
   description: "Operations that regards all containers"
 - name: "threshold"
-  description: "Operation about the lossy threshold used in netem"
+  description: "Operation about the lossy threshold used in the Agent"
 schemes:
 - "https"
 - "http"
@@ -97,7 +97,7 @@ paths:
       tags:
       - "threshold"
       summary: "Update packet loss threshold"
-      description: "Update packet loss threshold used in the Agents"
+      description: "Update packet loss threshold used in the Agent"
       operationId: "put_threshold"
       consumes:
       - "application/xml"
