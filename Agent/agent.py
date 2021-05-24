@@ -19,16 +19,19 @@ MONITORED_LIST = [
 
 
 def add_to_monitored(container_name):
-    MONITORED_LIST.append(container_name)
+    with lock:
+        MONITORED_LIST.append(container_name)
 
 
 def remove_from_monitored(container_name):
-    MONITORED_LIST.remove(container_name)
+    with lock:
+        MONITORED_LIST.remove(container_name)
 
 
 def change_threshold(new_value):
-    global THRESHOLD
-    THRESHOLD = new_value
+    with lock:
+        global THRESHOLD
+        THRESHOLD = new_value
 
 
 def ping(address):
@@ -95,7 +98,7 @@ def agent_thread():
     while 1:
         with lock:
             local_threshold = THRESHOLD
-            local_list = MONITORED_LIST
+            local_list = MONITORED_LIST.copy()
         logging.info("Packet loss threshold: %d", local_threshold)
         logging.info("%s - Checking the state of containers...", datetime.now())
         periodic_check(local_list, local_threshold)
