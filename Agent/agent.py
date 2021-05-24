@@ -19,16 +19,19 @@ MONITORED_LIST = [
 
 
 def add_to_monitored(container_name):
-    MONITORED_LIST.append(container_name)
+    with lock:
+        MONITORED_LIST.append(container_name)
 
 
 def remove_from_monitored(container_name):
-    MONITORED_LIST.remove(container_name)
+    with lock:
+        MONITORED_LIST.remove(container_name)
 
 
 def change_threshold(new_value):
-    global THRESHOLD
-    THRESHOLD = new_value
+    with lock:
+        global THRESHOLD
+        THRESHOLD = new_value
 
 
 def ping(address):
