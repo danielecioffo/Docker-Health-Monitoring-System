@@ -32,7 +32,7 @@ def put_threshold(thresholdValue):  # noqa: E501
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='172.16.3.172'))
     channel = connection.channel()
     channel.queue_declare(queue='threshold')
-    channel.basic_publish(exchange='', routing_key='threshold', body=t_value_float)
+    channel.basic_publish(exchange='', routing_key='threshold', body=str(t_value_float))
     connection.close()
 
     return 'Successful operation!'
