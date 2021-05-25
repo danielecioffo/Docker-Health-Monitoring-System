@@ -44,7 +44,7 @@ def get_containers():  # noqa: E501
     i = 0
     while i != 4:
         method_frame, header_frame, body = channel.basic_get(queue='list_response')
-        if method_frame.NAME is not None:
+        if method_frame is not None:
             channel.basic_ack(delivery_tag=method_frame.delivery_tag)
             body_array = json.load(body)
             for value in body_array:
