@@ -81,12 +81,12 @@ def periodic_check(to_be_monitored, threshold):
             container.restart()
         else:
             loss = ping(ip_address)
-            if loss >= threshold:
-                logging.warning("Container %s is experiencing %f%% packet loss. Restarting it...", monitored, loss)
-                container.restart()
+            if loss < threshold:
+                logging.info("Container %s is experiencing %.2f%% packet loss (under the selected threshold for "
+                             "restart)", monitored, loss)
             else:
-                logging.info("Container %s is experiencing %f%% packet loss (under the selected threshold for restart)",
-                             monitored, loss)
+                logging.warning("Container %s is experiencing %.2f%% packet loss. Restarting it...", monitored, loss)
+                container.restart()
 
 
 def agent_thread():
