@@ -22,4 +22,4 @@ docker run -d --name antagonist -v /var/run/docker.sock:/var/run/docker.sock ant
 
 # Start REST
 docker build -t swagger_server Rest/
-docker run -p 8080:8080 swagger_server
+docker run --name swagger_server -p 8080:8080 swagger_server
