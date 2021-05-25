@@ -42,7 +42,7 @@ def generic_callback(ch, method, properties, body):
     # parse message, call the correct method
     # if topic is threshold, call change threshold
     if method.routing_key == 'threshold':
-        change_threshold(body.decode())
+        change_threshold(float(body.decode()))
     # if topic is list_request, call provide_list_of_containers
     elif method.routing_key == 'list_request':
         provide_list_of_containers()
