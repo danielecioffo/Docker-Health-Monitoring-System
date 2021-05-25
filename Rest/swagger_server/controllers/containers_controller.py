@@ -55,7 +55,6 @@ def get_containers():  # noqa: E501
 
     connection.close()
 
-
     return return_value
 
 
