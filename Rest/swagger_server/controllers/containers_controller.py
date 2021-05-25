@@ -42,7 +42,7 @@ def get_containers():  # noqa: E501
     # FETCH INFORMATIONS FROM CONTAINERS
     channel.queue_declare(queue='list_response')
     i = 0
-    while i != 4:
+    while i != 1:
         method_frame, header_frame, body = channel.basic_get(queue='list_response')
         if method_frame is not None:
             channel.basic_ack(delivery_tag=method_frame.delivery_tag)
