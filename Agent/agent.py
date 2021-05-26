@@ -41,8 +41,7 @@ def change_threshold(new_value):
 
 def report_container_status():
     """
-    Function
-    :return:
+    :return: a list containing all containers present on the machine and their status
     """
     container_list = client.containers.list(all=True)
     status_list = []
