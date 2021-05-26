@@ -8,6 +8,8 @@ import subprocess
 from subprocess import PIPE
 import communication
 
+
+client = docker.from_env()
 lock = threading.Lock()  # Lock to be acquired in order to read/write into shared variables
 INTERVAL_BETWEEN_PINGS = 10  # Seconds between periodic checks
 THRESHOLD = 50  # Packet loss threshold
@@ -50,9 +52,9 @@ def report_container_status():
     container_list = client.containers.list(all=True)
     status_list = []
     for container in container_list:
-        status = container.status()
+        status = container.status
         name = container.name
-        hostname = socket.gethostname()
+        hostname = socket.gethostname
         if container.name in MONITORED_LIST:
             monitored = True
         else:
@@ -109,7 +111,7 @@ if __name__ == '__main__':
     logging.basicConfig(filename='execution.log', level=logging.INFO)
 
     # Instantiate a Docker client
-    client = docker.from_env()
+    #client = docker.from_env()
 
     # Start agent thread
     agent = threading.Thread(target=agent_thread)
