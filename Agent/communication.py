@@ -12,7 +12,8 @@ def change_threshold(val):
 
 
 def activate_deactivate_container(container_name, hostname, new_status):
-    logging.info("Received command: change monitored value of container %s on %s into %s", container_name, hostname, new_status)
+    logging.info("Received command: change monitored value of container %s on %s into %s",
+                 container_name, hostname, new_status)
     if hostname != socket.gethostname():
         return
     if new_status == 'True':
@@ -49,8 +50,9 @@ def generic_callback(ch, method, properties, body):
         provide_list_of_containers()
     # if topic is actives, call activate_deactivate_container
     elif method.routing_key == 'actives':
-        body_tuple = tuple((body.decode().replace("(", "").replace(")", "")).split(','))
-        activate_deactivate_container(container_name=body_tuple[1], hostname=body_tuple[0], new_status=body_tuple[2])
+        body_tuple = tuple((body.decode().replace("(", "").replace(")", "")).replace("'", "").split(','))
+        activate_deactivate_container(container_name=body_tuple[1].strip(),
+                                      hostname=body_tuple[0].strip(), new_status=body_tuple[2].strip())
 
 
 def initialize_communication():

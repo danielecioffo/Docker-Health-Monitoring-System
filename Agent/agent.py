@@ -7,32 +7,56 @@ from datetime import datetime
 import subprocess
 from subprocess import PIPE
 import communication
+import config
 
+# Instantiate a Docker client
 client = docker.from_env()
-lock = threading.Lock()  # Lock to be acquired in order to read/write into shared variables
-INTERVAL_BETWEEN_PINGS = 10  # Seconds between periodic checks
-THRESHOLD = 50  # Packet loss threshold
-MONITORED_LIST = [
-    "dummy_one",
-    "dummy_two",
-    "dummy_three"
-]
+# Lock to be acquired in order to read/write into shared variables
+lock = threading.Lock()
 
 
 def add_to_monitored(container_name):
+    """
+    :param container_name: name of the container to be added to the list of monitored containers
+    """
     with lock:
-        MONITORED_LIST.append(container_name)
+        config.MONITORED_LIST.append(container_name)
 
 
 def remove_from_monitored(container_name):
+    """
+    :param container_name: name of the container to be removed from the list of monitored containers
+    """
     with lock:
-        MONITORED_LIST.remove(container_name)
+        config.MONITORED_LIST.remove(container_name)
 
 
 def change_threshold(new_value):
+    """
+    :param new_value: new threshold
+    """
     with lock:
-        global THRESHOLD
-        THRESHOLD = new_value
+        config.THRESHOLD = new_value
+
+
+def report_container_status():
+    """
+    Function
+    :return:
+    """
+    container_list = client.containers.list(all=True)
+    status_list = []
+    for container in container_list:
+        status = container.status
+        name = container.name
+        hostname = socket.gethostname()
+        if container.name in config.MONITORED_LIST:
+            monitored = True
+        else:
+            monitored = False
+        status_list.append({'hostname': hostname, 'name': name, 'status': status, 'monitored': monitored})
+
+    return status_list
 
 
 def ping(address):
@@ -47,25 +71,11 @@ def ping(address):
     return packet_loss
 
 
-def report_container_status():
-    container_list = client.containers.list(all=True)
-    status_list = []
-    for container in container_list:
-        status = container.status
-        name = container.name
-        hostname = socket.gethostname()
-        if container.name in MONITORED_LIST:
-            monitored = True
-        else:
-            monitored = False
-        status_list.append({'hostname': hostname, 'name': name, 'status': status, 'monitored': monitored})
-
-    return status_list
-
-
 def periodic_check(to_be_monitored, threshold):
     """
-    Function to be called periodically to monitor the state of all containers in MONITORED_LIST
+    Function to be called periodically to monitor the state of containers
+    :param to_be_monitored: list of containers to be monitored
+    :param threshold: threshold for packet loss
     """
     for monitored in to_be_monitored:
         # Try to find the container to be monitored in the list
@@ -82,10 +92,13 @@ def periodic_check(to_be_monitored, threshold):
             logging.warning("Container %s is down. Restarting it...", monitored)
             container.restart()
         else:
+            # Ping the container and calculate the packet loss
             loss = ping(ip_address)
+            # If the packet loss is lower than the threshold nothing has to be done
             if loss < threshold:
                 logging.info("Container %s is experiencing %.2f%% packet loss (under the selected threshold for "
                              "restart)", monitored, loss)
+            # If the packet loss is higher than the threshold the container must be restarted
             else:
                 logging.warning("Container %s is experiencing %.2f%% packet loss. Restarting it...", monitored, loss)
                 container.restart()
@@ -96,22 +109,20 @@ def agent_thread():
     Function to be run by the agent thread that must check the status of the system
     """
     logging.info("%s - Agent started", datetime.now())
-    logging.info("Interval between periodic checks: %d", INTERVAL_BETWEEN_PINGS)
+    logging.info("Interval between periodic checks: %d", config.INTERVAL_BETWEEN_PINGS)
     while 1:
         with lock:
-            local_threshold = THRESHOLD
-            local_list = MONITORED_LIST.copy()
-        logging.info("Packet loss threshold: %d", local_threshold)
+            local_threshold = config.THRESHOLD
+            local_list = config.MONITORED_LIST.copy()
+        logging.info("Packet loss threshold: %.2f", local_threshold)
+        logging.info("List of containers to be monitored: [%s]" % ', '.join(local_list))
         logging.info("%s - Checking the state of containers...", datetime.now())
         periodic_check(local_list, local_threshold)
-        time.sleep(INTERVAL_BETWEEN_PINGS)
+        time.sleep(config.INTERVAL_BETWEEN_PINGS)
 
 
 if __name__ == '__main__':
     logging.basicConfig(filename='execution.log', level=logging.INFO)
-
-    # Instantiate a Docker client
-    # client = docker.from_env()
 
     # Start agent thread
     agent = threading.Thread(target=agent_thread)
