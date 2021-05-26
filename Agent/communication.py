@@ -1,4 +1,5 @@
 # consume messages from REST interface
+import logging
 import pika
 import socket
 import json
@@ -6,12 +7,12 @@ import agent
 
 
 def change_threshold(val):
-    print("Received command: change threshold to %d", val)
+    logging.info("Received command: change threshold to %.2f", val)
     agent.change_threshold(val)
 
 
 def activate_deactivate_container(container_name, hostname, new_status):
-    print("Received command: change monitored value of container %s on %d into %s", container_name, hostname, new_status)
+    logging.info("Received command: change monitored value of container %s on %s into %s", container_name, hostname, new_status)
     if hostname != socket.gethostname():
         return
     if new_status == 'True':
@@ -26,19 +27,19 @@ def provide_list_of_containers():
     callback when the status is asked
     collects the status from each container and publishes it into the relative topic
     """
-    print("Received command: provide list of containers")
+    logging.info("Received command: provide list of containers")
     string = json.dumps(agent.report_container_status())  # find status of containers
 
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='172.16.3.172'))  # broker ip address
     channel = connection.channel()
     channel.exchange_declare(exchange='topics', exchange_type='topic')
     channel.basic_publish(exchange='topics', routing_key='list_response', body=string)
-    print("I've sent the following answer %s", string)
+    logging.info("I've sent the following answer %s", string)
     connection.close()
 
 
 def generic_callback(ch, method, properties, body):
-    print("Hello, message received")
+    logging.info("Hello, message received")
     # parse message, call the correct method
     # if topic is threshold, call change threshold
     if method.routing_key == 'threshold':
