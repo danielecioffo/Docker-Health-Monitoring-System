@@ -54,12 +54,13 @@ def report_container_status():
     for container in container_list:
         status = container.status
         name = container.name
-        hostname = socket.gethostname
+        hostname = socket.gethostname()
         if container.name in MONITORED_LIST:
             monitored = True
         else:
             monitored = False
         status_list.append({'hostname': hostname, 'name': name, 'status': status, 'monitored': monitored})
+
     return status_list
 
 
