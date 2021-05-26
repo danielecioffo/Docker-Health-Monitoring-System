@@ -50,7 +50,7 @@ def generic_callback(ch, method, properties, body):
     elif method.routing_key == 'actives':
         #body_string = body.decode().replace("(", "").replace(")", "")
         #body_tuple = tuple(map(str, body_string))
-        body_tuple = tuple((body.decode.replace("(", "").replace(")", "")).split(','))
+        body_tuple = tuple((body.decode().replace("(", "").replace(")", "")).split(','))
         activate_deactivate_container(container_name=body_tuple[1], hostname=body_tuple[0], new_status=body_tuple[2])
 
 
