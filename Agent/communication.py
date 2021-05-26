@@ -31,8 +31,8 @@ def provide_list_of_containers():
 
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='172.16.3.172'))  # broker ip address
     channel = connection.channel()
-    channel.queue_declare(queue='list_response')
-    channel.basic_publish(exchange='', routing_key='list_response', body=string)
+    channel.exchange_declare(exchange='topics', exchange_type='topic')
+    channel.basic_publish(exchange='topics', routing_key='list_response', body=string)
     print("I've sent the following answer %s", string)
     connection.close()
 

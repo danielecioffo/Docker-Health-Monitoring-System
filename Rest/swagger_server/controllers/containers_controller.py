@@ -36,14 +36,16 @@ def get_containers():  # noqa: E501
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='172.16.3.172'))
     channel = connection.channel()
     # ASK FOR CONTAINERS
-    channel.queue_declare(queue='list_request')
-    channel.basic_publish(exchange='', routing_key='list_request', body='')
+    channel.exchange_declare(exchange='topics', exchange_type='topic')
+    channel.basic_publish(exchange='topics', routing_key='list_request', body='')
 
     # FETCH INFORMATIONS FROM CONTAINERS
-    channel.queue_declare(queue='list_response')
+    result = channel.queue_declare('', exclusive=True)
+    queue_name = result.method.queue
+    channel.queue_bind(exchange='topics', queue=queue_name, routing_key='list_response')
     i = 0
     while i != 1:
-        method_frame, header_frame, body = channel.basic_get(queue='list_response')
+        method_frame, header_frame, body = channel.basic_get(queue=queue_name)
         if method_frame is not None:
             channel.basic_ack(delivery_tag=method_frame.delivery_tag)
             body_array = json.load(body)
@@ -92,6 +94,6 @@ def activate_deactivate_posting(hostname, container_name, new_status):
     body_string = str(body_tuple)
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='172.16.3.172'))
     channel = connection.channel()
-    channel.queue_declare(queue='actives')
-    channel.basic_publish(exchange='', routing_key='actives', body=body_string)
+    channel.exchange_declare(exchange='topics', exchange_type='topic')
+    channel.basic_publish(exchange='topics', routing_key='actives', body=body_string)
     connection.close()
