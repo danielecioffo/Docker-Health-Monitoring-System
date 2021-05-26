@@ -1,0 +1,6 @@
+\section{Dummy Container}
+As already anticipated, in order to test the proper functioning of the system we created containers on each Docker host. These “dummy” containers are built from a custom image we created specifically for this project. In particular, it is an Ubuntu image that includes a Python interpreter and that runs two Python scripts at startup.
+
+One of the two scripts is the actual dummy, and it is trivially an infinite loop that periodically prints messages specifying the time at which it was started and when it is being executed.
+
+The other, as explained in the previous section, is the part of the antagonist that is responsible for creating artificial problems on the network.

@@ -1,0 +1,32 @@
+\section{Agent}
+As already mentioned, the agent’s main task is to monitor the health of containers running on its same machine by pinging them periodically. The agent is nothing more than a Python program that can communicate with the Docker daemon thanks to the "docker" Python library\footnote{https://docker-py.readthedocs.io/en/stable/ }.
+
+In order to talk to the Docker daemon, first of all a client is instantiated through the command \textit{from\_env()}. Then, the agent will start its periodic check.
+
+Specifically, every \textit{INTERVAL\_BETWEEN\_PINGS} seconds, for each containers name in the \textit{MONITORED\_LIST} the agent performs the following actions:
+
+\begin{itemize}
+	\item It tries to retrieve the container object from its name. If the container does not exist on that particular host, the agent skips the next steps.
+	\item It retrieves the IP address of the container within the bridge network. If the container has no IP address assigned, it means that it is not running, so the agent restarts it and skips the next steps.
+	\item It pings the IP address of the container by sending 5 packets and it calculates the percentage of packet loss. If this percentage is higher than the \textit{THRESHOLD} value, then the agent restarts the container; otherwise, it assumes that everything is working properly.
+\end{itemize}
+In addition to the above actions, the agent also writes to a log file every time it performs a check or some action, so that it is easier for us to debug.
+
+Moreover, in order to communicate with the other containers of the Health Monitoring System, the agent implements a \textbf{communication module} through which it receives the administration commands coming from the REST interface and forwarded by the relative \textbf{swagger server}, and performs the relative actions on all the monitored containers in the targeted hosts. (Of course every agent instance controls the host in which it runs).
+
+To be precise, the \textbf{communication module subscribes} to different topics, corresponding to the possible commands that can be received by the administrator, and when a message is consumed, the body is decoded in order to perform the action. Those topics are:
+
+\begin{enumerate}
+	\item \textbf{threshold} (publisher: Swagger server, subscribers: agent instances, body: new\_value): asks to every receiver agent to change the allowed rate of packet loss for every monitored container
+	\item \textbf{list\_request} (publisher: Swagger server, subscribers: agent instances, body: N/D): asks to every receiver agent the status of all the containers running in the target host, in terms of hostname, container name, operational status (running or exited) and monitoring status (monitored or non-monitored)
+	\item textbf{actives} publisher: Swagger server, subscribers: agent instances, body: tuple(str hostname, str name, boolean new\_status): asks for a specific container to be added to (new\_status=True) or removed from (new\_status=False) the monitored list. Only the relative agent instance performs the action, the others discard the packet.
+	\item \textbf{list\_response} (publishers: agent instances, subscriber: Swagger server, body: json\_str \textit{\[\{hostname: “hostname”, name: “name”, status: “running/exited”, monitored: ”true/false”\}\]}): response provided to list\_request, in which every agent instances report the status of the container running on the relative host
+\end{enumerate}
+
+Since the RabbitMQ consume operation is blocking, in order not to stale the agent we adopted the following solutions:
+\begin{itemize}
+	\item The communication module and the “pure agent” one run on \textbf{two different python threads}, in this way the administration command can still be received while the periodic check is performed
+	\item The shared context is made only by two data structures, i.e.,  \textit{MONITORED\_LIST} and \textit{THRESHOLD} integer; every possible concurrent access to them has been avoided using the python explicit locking
+	\item In order to minimize the lock time, instead of maintaining the lock for the entire agent’s read access to the shared variables, they are locally copied every time a periodic check is about to start, keeping the lock itself just for the copy time.
+\end{itemize}
+
