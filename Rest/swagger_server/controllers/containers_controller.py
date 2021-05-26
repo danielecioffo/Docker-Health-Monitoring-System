@@ -6,6 +6,7 @@ import json
 from swagger_server.models.container import Container  # noqa: E501
 from swagger_server import util
 
+NUMBER_OF_HOSTS = 1
 
 def delete_monitored_container(hostname, containerName):  # noqa: E501
     """Unmonitor specified container
@@ -44,7 +45,7 @@ def get_containers():  # noqa: E501
     queue_name = result.method.queue
     channel.queue_bind(exchange='topics', queue=queue_name, routing_key='list_response')
     i = 0
-    while i != 1:
+    while i != NUMBER_OF_HOSTS:
         method_frame, header_frame, body = channel.basic_get(queue=queue_name)
         if method_frame is not None:
             channel.basic_ack(delivery_tag=method_frame.delivery_tag)
