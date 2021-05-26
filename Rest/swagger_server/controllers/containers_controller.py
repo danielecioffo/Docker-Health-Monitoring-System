@@ -48,7 +48,7 @@ def get_containers():  # noqa: E501
         method_frame, header_frame, body = channel.basic_get(queue=queue_name)
         if method_frame is not None:
             channel.basic_ack(delivery_tag=method_frame.delivery_tag)
-            body_array = json.load(body)
+            body_array = json.loads(body.decode())
             for value in body_array:
                 return_value.append(
                     Container(name=value.get('name'), host=value.get('hostname'), monitor=value.get('monitored'),
