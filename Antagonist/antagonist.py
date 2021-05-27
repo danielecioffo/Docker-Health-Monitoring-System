@@ -14,6 +14,10 @@ CONTAINERS_TO_AVOID = [
 
 
 def periodic_attack():
+    """
+    Function to be called periodically to simulate an attack
+    This function will try to shutdown one of the container in the docker host
+    """
     list_of_containers = client.containers.list()  # get the active containers
     for name in CONTAINERS_TO_AVOID:
         try:
