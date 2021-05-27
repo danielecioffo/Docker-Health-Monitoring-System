@@ -1,9 +1,4 @@
 # Stop health monitoring agent
-#docker stop agent
-
-# Remove agent
-#docker rm agent
-
 pkill python3
 
 # Stop antagonist
