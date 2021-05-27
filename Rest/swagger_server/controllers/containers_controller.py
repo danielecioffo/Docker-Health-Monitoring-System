@@ -6,7 +6,7 @@ import json
 from swagger_server.models.container import Container  # noqa: E501
 from swagger_server import util
 
-NUMBER_OF_HOSTS = 1
+NUMBER_OF_HOSTS = 4
 
 def delete_monitored_container(hostname, containerName):  # noqa: E501
     """Unmonitor specified container
