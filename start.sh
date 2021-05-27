@@ -19,7 +19,3 @@ python3 Agent/agent.py &
 # Start antagonist
 docker build -t antagonist Antagonist/
 docker run -d --name antagonist -v /var/run/docker.sock:/var/run/docker.sock antagonist
-
-# Start REST
-docker build -t swagger_server Rest/
-docker run --name swagger_server -p 8080:8080 swagger_server
