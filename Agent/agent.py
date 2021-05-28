@@ -28,6 +28,10 @@ def add_to_monitored(container_name):
                         "so it cannot be added to the list to be monitored", container_name)
         return
     with lock:
+        if container_name in config.MONITORED_LIST:
+            logging.warning("Container %s in already in the list to be monitored, "
+                            "so it cannot be added to it", container_name)
+            return
         config.MONITORED_LIST.append(container_name)
 
 
