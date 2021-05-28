@@ -28,9 +28,12 @@ def periodic_attack():
         # STOP ONE CONTAINER
         index = random.randrange(len(list_of_containers))  # random value from 0 to length (of the list of containers)
         container_to_stop = list_of_containers[index]
-        # stop the chosen container
-        logging.info("%s - Container stopped: %s\n", datetime.now(), container_to_stop.name)
-        container_to_stop.stop()
+        try:
+            # stop the chosen container
+            container_to_stop.stop()
+            logging.info("%s - Container stopped: %s\n", datetime.now(), container_to_stop.name)
+        except:
+            pass
 
 
 if __name__ == '__main__':
