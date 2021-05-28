@@ -19,6 +19,14 @@ def add_to_monitored(container_name):
     """
     :param container_name: name of the container to be added to the list of monitored containers
     """
+    container_list = client.containers.list(all=True)
+    name_list = []
+    for container in container_list:
+        name_list.append(container.name)
+    if container_name not in name_list:
+        logging.warning("There is no container named %s on this host, "
+                        "so it cannot be added to the list to be monitored", container_name)
+        return
     with lock:
         config.MONITORED_LIST.append(container_name)
 
@@ -28,7 +36,11 @@ def remove_from_monitored(container_name):
     :param container_name: name of the container to be removed from the list of monitored containers
     """
     with lock:
-        config.MONITORED_LIST.remove(container_name)
+        try:
+            config.MONITORED_LIST.remove(container_name)
+        except:
+            logging.warning("Container %s is not in the list of monitored ones, "
+                            "therefore it cannot be removed", container_name)
 
 
 def change_threshold(new_value):

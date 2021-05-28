@@ -16,11 +16,11 @@ def activate_deactivate_container(container_name, hostname, new_status):
                  container_name, hostname, new_status)
     if hostname != socket.gethostname():
         return
+    # change the status of the selected container
     if new_status == 'True':
         agent.add_to_monitored(container_name)
     elif new_status == 'False':
         agent.remove_from_monitored(container_name)
-    # change the status of the selected container
 
 
 def provide_list_of_containers():
