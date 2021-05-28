@@ -2,6 +2,7 @@ import connexion
 import six
 import pika
 import json
+import time
 
 from swagger_server.models.container import Container  # noqa: E501
 from swagger_server import util
@@ -45,8 +46,11 @@ def get_containers():  # noqa: E501
     result = channel.queue_declare('', exclusive=True)
     queue_name = result.method.queue
     channel.queue_bind(exchange='topics', queue=queue_name, routing_key='list_response')
+
+    elapsed_start = time.time()
+    elapsed = elapsed_start
     i = 0
-    while i != NUMBER_OF_HOSTS:
+    while elapsed < elapsed_start + 4:
         method_frame, header_frame, body = channel.basic_get(queue=queue_name)
         if method_frame is not None:
             channel.basic_ack(delivery_tag=method_frame.delivery_tag)
@@ -56,6 +60,10 @@ def get_containers():  # noqa: E501
                     Container(name=value.get('name'), host=value.get('hostname'), monitor=value.get('monitored'),
                               status=value.get('status')))
             i += 1
+            if i == NUMBER_OF_HOSTS:
+                break
+
+        elapsed = time.time()
 
     connection.close()
 
