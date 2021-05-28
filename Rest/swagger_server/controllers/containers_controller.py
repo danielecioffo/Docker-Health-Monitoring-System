@@ -8,6 +8,7 @@ from swagger_server import util
 
 NUMBER_OF_HOSTS = 4
 
+
 def delete_monitored_container(hostname, containerName):  # noqa: E501
     """Unmonitor specified container
 
@@ -21,7 +22,7 @@ def delete_monitored_container(hostname, containerName):  # noqa: E501
     :rtype: None
     """
     activate_deactivate_posting(hostname, containerName, 'False')
-    return 'Successful operation!'
+    return 'Request received successfully!'
 
 
 def get_containers():  # noqa: E501
@@ -74,7 +75,7 @@ def post_container(hostname, containerName):  # noqa: E501
     :rtype: None
     """
     activate_deactivate_posting(hostname, containerName, 'True')
-    return 'Successful operation!'
+    return 'Request received successfully!'
 
 
 def activate_deactivate_posting(hostname, container_name, new_status):

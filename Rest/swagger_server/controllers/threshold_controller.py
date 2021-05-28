@@ -35,4 +35,4 @@ def put_threshold(thresholdValue):  # noqa: E501
     channel.basic_publish(exchange='topics', routing_key='threshold', body=str(t_value_float))
     connection.close()
 
-    return 'Successful operation!'
+    return 'Request received successfully!'

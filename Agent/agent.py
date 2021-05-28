@@ -19,6 +19,7 @@ def add_to_monitored(container_name):
     """
     :param container_name: name of the container to be added to the list of monitored containers
     """
+    # Check if there is a container with that name on the host
     container_list = client.containers.list(all=True)
     name_list = []
     for container in container_list:
@@ -28,6 +29,7 @@ def add_to_monitored(container_name):
                         "so it cannot be added to the list to be monitored", container_name)
         return
     with lock:
+        # Avoid duplicate entries in the list
         if container_name in config.MONITORED_LIST:
             logging.warning("Container %s in already in the list to be monitored, "
                             "so it cannot be added to it", container_name)
