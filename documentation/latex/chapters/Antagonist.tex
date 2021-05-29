@@ -1,1 +1,8 @@
 \section{Antagonist}
+In order to test the health monitoring system a small program (the antagonist) has been developed to stop containers or cause some artificial packet loss.
+More precisely, the antagonist was implemented in two different modules. 
+
+\noindent One of the two modules is implemented in each host on a docker container, starting from a customized Ubuntu image. In this container there is the python interpreter which is used to execute the antagonist.py file.
+This first module periodically attacks one of the local docker containers, simulating a stop of that container (leveraging the Docker API for python).
+
+\noindent The second module has been implemented inside each dummy containers, which we will discuss in detail in the next chapter. This module allows you to simulate network problems on a certain container, through the use of the Netem library. The simulated packet loss percentage is periodically changed, through the use of this command: \emph{tc qdisc add dev eth0 root netem loss XX\%}, with XX the packet loss value.
