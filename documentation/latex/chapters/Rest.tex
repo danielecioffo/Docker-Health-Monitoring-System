@@ -3,7 +3,7 @@ This REST APIs were generated using \textit{Swagger Editor} and the functionalit
 
 \begin{itemize}
 	\item \textbf{GET}:
-		\subitem \textit{containers/} : Retrieve the list of all containers with their informations. The \textit{response} is a list of containers containing for each one its hostname, its name, its status and if it is monitored or not.
+		\subitem \textit{containers/} : Retrieve the list of all containers\footnote{All containers that are active. The REST interface knows the total number of actives hosts, but if some of them are down the GET operation works retrieving only the ones that respond within a lap of time equal to 4 seconds. If all of the hosts answer to the request in a shorter time, the REST interface stops wait for answers and send the list of all containers back to the user} with their informations. The \textit{response} is a list of containers containing for each one its hostname, its name, its status and if it is monitored or not.
 	\item \textbf{POST}:
 		\subitem \textit{containers/\{hostname\}/\{containerName\}} : Monitor container specified in the path
 	\item \textbf{DELETE}:
