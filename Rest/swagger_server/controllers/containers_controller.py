@@ -1,11 +1,9 @@
-import connexion
-import six
 import pika
 import json
 import time
+import requests
 
 from swagger_server.models.container import Container  # noqa: E501
-from swagger_server import util
 
 NUMBER_OF_HOSTS = 4
 
@@ -47,10 +45,16 @@ def get_containers():  # noqa: E501
     queue_name = result.method.queue
     channel.queue_bind(exchange='topics', queue=queue_name, routing_key='list_response')
 
+    req = requests.get('http://172.16.3.172:8080/api/exchanges/%2F/topics/bindings/source', auth=('guest', 'guest'))
+    try:
+        response = req.json()
+        NUMBER_OF_HOSTS = len([line["routing_key"] for line in response if line["routing_key"] == "list_request"])
+    except:
+        NUMBER_OF_HOSTS = 4
     elapsed_start = time.time()
     elapsed = elapsed_start
     i = 0
-    while elapsed < elapsed_start + 4:
+    while elapsed < elapsed_start + 1*NUMBER_OF_HOSTS:
         method_frame, header_frame, body = channel.basic_get(queue=queue_name)
         if method_frame is not None:
             channel.basic_ack(delivery_tag=method_frame.delivery_tag)
