@@ -54,7 +54,7 @@ def get_containers():  # noqa: E501
     elapsed_start = time.time()
     elapsed = elapsed_start
     i = 0
-    while elapsed < elapsed_start + 1*NUMBER_OF_HOSTS:
+    while elapsed < elapsed_start + 4:
         method_frame, header_frame, body = channel.basic_get(queue=queue_name)
         if method_frame is not None:
             channel.basic_ack(delivery_tag=method_frame.delivery_tag)
