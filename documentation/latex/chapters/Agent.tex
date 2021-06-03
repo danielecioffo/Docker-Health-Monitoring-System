@@ -19,8 +19,8 @@ In addition to the above actions, the agent also writes to a log file every time
 \begin{enumerate}
 	\item \textbf{threshold} (publisher: Swagger server, subscribers: agent instances, body: new\_value): asks to every receiver agent to change the allowed rate of packet loss for every monitored container
 	\item \textbf{list\_request} (publisher: Swagger server, subscribers: agent instances, body: N/D): asks to every receiver agent the status of all the containers running in the target host, in terms of hostname, container name, operational status (running or exited) and monitoring status (monitored or non-monitored)
-	\item \textbf{actives} publisher: Swagger server, subscribers: agent instances, body: tuple(str hostname, str name, boolean new\_status): asks for a specific container to be added to (new\_status=True) or removed from (new\_status=False) the monitored list. Only the relative agent instance performs the action, the others discard the packet.
-	\item \textbf{list\_response} (publishers: agent instances, subscriber: Swagger server, body: json\_str \textit{\[\{hostname: “hostname”, name: “name”, status: “running/exited”, monitored: ”true/false”\}\]}): response provided to list\_request, in which every agent instances report the status of the container running on the relative host
+	\item \textbf{actives} (publisher: Swagger server, subscribers: agent instances, body: tuple\{hostname, name, new\_status\}): asks for a specific container to be added to (new\_status=True) or removed from (new\_status=False) the monitored list. Only the relative agent instance performs the action, the others discard the packet.
+	\item \textbf{list\_response} (publishers: agent instances, subscriber: Swagger server, body: json\_string \[\{hostname: hostname, name: name, status: running/exited, monitored: true/false\}\]): response provided to list\_request, in which every agent instances report the status of the container running on the relative host
 \end{enumerate}
 
 \noindent Since the RabbitMQ consume operation is blocking, in order not to stale the agent we adopted the following solutions:
