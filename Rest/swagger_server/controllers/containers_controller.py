@@ -51,6 +51,10 @@ def get_containers():  # noqa: E501
         NUMBER_OF_HOSTS = len([line["routing_key"] for line in response if line["routing_key"] == "list_request"])
     except:
         NUMBER_OF_HOSTS = 4
+
+    if NUMBER_OF_HOSTS == 0:  # no need to wait packets
+        return []
+
     elapsed_start = time.time()
     elapsed = elapsed_start
     i = 0
