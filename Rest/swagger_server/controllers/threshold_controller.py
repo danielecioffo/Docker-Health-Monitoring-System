@@ -23,7 +23,8 @@ def put_threshold(thresholdValue):  # noqa: E501
             thresholdValue = thresholdValue.get('thresholdValue', -1)
         print(str(thresholdValue) + "\n" + str(type(thresholdValue)))
     else: # Controlling if the thresholdValue is received as a xml
-        thresholdValue = str(thresholdValue) # the thresholdValue received is always a b'string
+        if type(thresholdValue) is not float:
+            thresholdValue = thresholdValue.decode("utf-8")
         if thresholdValue.startswith("<"): # it is an xml
             if thresholdValue.startswith("<thresholdValue>"): # the xml is correct
                 thresholdValue = thresholdValue.replace("<thresholdValue>", "").split("<")[0]
