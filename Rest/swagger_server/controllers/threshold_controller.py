@@ -27,6 +27,8 @@ def put_threshold(thresholdValue):  # noqa: E501
         if thresholdValue.startswith("<"): # it is an xml
             if thresholdValue.startswith("<thresholdValue>"): # the xml is correct
                 thresholdValue = thresholdValue.replace("<thresholdValue>", "").split("<")[0]
+            else:
+                return 'Invalid xml submitted'
 
 
 
