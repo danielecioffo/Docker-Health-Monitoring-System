@@ -22,6 +22,14 @@ def put_threshold(thresholdValue):  # noqa: E501
         if type(thresholdValue) is dict:
             thresholdValue = thresholdValue.get('thresholdValue', -1)
         print(str(thresholdValue) + "\n" + str(type(thresholdValue)))
+    else: # Controlling if the thresholdValue is received as a xml
+        thresholdValue = str(thresholdValue) # the thresholdValue received is always a b'string
+        if thresholdValue.startswith("<"): # it is an xml
+            if thresholdValue.startswith("<thresholdValue>"): # the xml is correct
+                thresholdValue = thresholdValue.replace("<thresholdValue>", "").split("<")[0]
+
+
+
 
     t_value_float = float(thresholdValue)
     print(t_value_float)
