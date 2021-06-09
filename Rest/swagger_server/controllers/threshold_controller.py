@@ -25,14 +25,11 @@ def put_threshold(thresholdValue):  # noqa: E501
     else: # Controlling if the thresholdValue is received as a xml
         if type(thresholdValue) is not float:
             thresholdValue = thresholdValue.decode("utf-8")
-        if thresholdValue.startswith("<"): # it is an xml
+        if thresholdValue.startswith("<"):  # it is an xml
             if thresholdValue.startswith("<thresholdValue>"): # the xml is correct
                 thresholdValue = thresholdValue.replace("<thresholdValue>", "").split("<")[0]
             else:
                 return 'Invalid xml submitted'
-
-
-
 
     t_value_float = float(thresholdValue)
     print(t_value_float)

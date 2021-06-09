@@ -1,5 +1,0 @@
-To see all the active rules:
-	tc qdisc
-	
-To delete the rule on eth0:
-	tc qdisc del dev eth0 root netem

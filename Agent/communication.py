@@ -1,4 +1,3 @@
-# consume messages from REST interface
 import logging
 import pika
 import socket
@@ -56,8 +55,6 @@ def generic_callback(ch, method, properties, body):
 
 
 def initialize_communication():
-    # to embed in a try/exception block
-
     connection = pika.BlockingConnection(pika.ConnectionParameters(host='172.16.3.172'))  # broker ip address
     channel = connection.channel()
     channel.exchange_declare(exchange='topics', exchange_type='topic')
